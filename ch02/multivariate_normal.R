@@ -46,4 +46,4 @@ p <- ggplot(dd,
     )
 p <- p + geom_point() + geom_hline(yintercept=th, linetype="dashed", colour="blue") + labs(title="", x="sample number", y="anomaly")
 plot(p)
-ggsave("multivariate-normal-anomaly.png", p)
+ggsave("./img/multivariate-normal-anomaly.png", p)
