@@ -1,4 +1,5 @@
 require(MASS)
+require(kernlab)
 require(ggplot2)
 
 # change working directory
@@ -28,43 +29,17 @@ head(Cars93[,mask])
 # 6               16.4    189       105    69          41   2880
 
 Xc <- t(scale(Cars93[,mask])) # centralized
-colnames(Xc) <- t(Cars93[,"Make"]) # car type
-S <- Xc %*% t(Xc)
-evd <- eigen(S) # eigenvalue decomposition
 
-d <- data.frame(x=c(1:15), y=evd$values)
-p <- ggplot(d,
-      aes(
-        x=x,
-        y=y
-      )
-    )
-p <- p + geom_point() + geom_line() + labs(title="", x="index", y="eigen value")
-plot(p)
-ggsave("./img/eigen-value.png", p)
+kpc <- kpca(
+    t(Xc),
+    kernel="rbfdot", # RBF kernel
+    kpar=list(sigma=0.01),
+    features=2
+  )
 
-m <- 2
-x2 <- t(evd$vectors[,1:m]) %*% Xc
-a1 <- colSums(Xc*Xc) - colSums(x2*x2) # calculate anomalies
+Zt <- rotated(kpc) # subspace
 
-print(a1[order(a1, decreasing=T)[1:6]])
-# Chevrolet Corvette        Honda Civic          Geo Metro Mercedes-Benz 300E
-#          13.595830          11.829742          11.156367          10.586025
-# Volkswagen Eurovan      Dodge Stealth
-#           9.971148           8.727322
-
-
-G <- t(Xc) %*% Xc # Gram matrix
-evd <- eigen(G)
-Lam_12 <- diag(evd$values[1:m]^{-1/2})
-xx2 <- Lam_12 %*% t(evd$vectors[,1:m]) %*% t(Xc) %*% Xc # normal
-aa1 <- colSums(Xc*Xc) - colSums(xx2*xx2) # calculate anomalies
-
-print(a1[order(a1, decreasing=T)[1:3]])
-# Chevrolet Corvette        Honda Civic          Geo Metro
-#           13.59583           11.82974           11.15637
-
-d <- data.frame(x=evd$vectors[,1], y=evd$vectors[,2])
+d <- data.frame(x=Zt[,1], y=Zt[,2])
 p <- ggplot(d,
       aes(
         x=x,
@@ -74,4 +49,26 @@ p <- ggplot(d,
     )
 p <- p + geom_point() + geom_text() + labs(title="", x="1st principal component", y="2nd principal component")
 plot(p)
-ggsave("./img/PCA.png", p)
+ggsave("./img/KPCA-sigma-0.01.png", p)
+
+
+kpc <- kpca(
+    t(Xc),
+    kernel="rbfdot", # RBF kernel
+    kpar=list(sigma=0.1),
+    features=2
+  )
+
+Zt <- rotated(kpc) # subspace
+
+d <- data.frame(x=Zt[,1], y=Zt[,2])
+p <- ggplot(d,
+      aes(
+        x=x,
+        y=y,
+        label=c(1:93)
+      )
+    )
+p <- p + geom_point() + geom_text() + labs(title="", x="1st principal component", y="2nd principal component")
+plot(p)
+ggsave("./img/KPCA-sigma-0.1.png", p)
