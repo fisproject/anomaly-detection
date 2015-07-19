@@ -1,4 +1,3 @@
-require(ggplot2)
 require(car)
 require(KernSmooth)
 
