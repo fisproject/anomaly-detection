@@ -23,7 +23,7 @@ p <- ggplot(d,
         fill=anomary,
       )
     )
-p <- p + geom_bar(stat = "identity") + labs(title="data", x="", y="score")
+p <- p + geom_bar(stat = "identity") + labs(title="", x="index", y="anomary score")
 plot(p)
 ggsave("./img/score.png", p)
 
