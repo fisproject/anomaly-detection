@@ -69,4 +69,4 @@ p <- ggplot(anomaly,
     )
 p <- p + geom_point() + geom_hline(yintercept=th, linetype="dashed", colour="blue") + labs(title="", x="sample index", y="anomaly")
 plot(p)
-ggsave("./img/anomary.png", p)
+ggsave("./img/anomaly.png", p)

@@ -18,7 +18,7 @@ summary(Davis)
 
 X <- Davis[-12, c("weight", "height")]
 res <- Mclust(X)
-summary(res, parameters=T)
+summary(res, parameters = T)
 # ----------------------------------------------------
 # Gaussian finite mixture model fitted by EM algorithm
 # ----------------------------------------------------
@@ -56,21 +56,22 @@ plot(res)
 pi <- res$parameters$pro # mix rete
 X <- Davis[, c("weight", "height")]
 XX <- cdens(
-      modelName=res$modelName,
+      modelName = res$modelName,
       X,
-      parameters=res$parameters
+      parameters = res$parameters
   )
 
-anomary <- -log(as.matrix(XX) %*% as.matrix(pi))
+anomaly <- -log(as.matrix(XX) %*% as.matrix(pi))
 
-d <- data.frame(x=c(1:200), y=anomary)
+d <- data.frame(x = c(1:200), y = anomaly)
 
 p <- ggplot(d,
       aes(
-        x=x,
-        y=y
+        x = x,
+        y = y
       )
     )
-p <- p + geom_point() + labs(title="", x="index", y="anomary")
+p <- p + geom_point() +
+    labs(title = "", x = "index", y = "anomaly")
 plot(p)
-ggsave("./img/mclust-anomary.png", p)
+ggsave("./img/mclust-anomaly.png", p)

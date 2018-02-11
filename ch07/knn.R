@@ -23,6 +23,6 @@ p <- ggplot(df,
         y=y
       )
     )
-p <- p + geom_line() + labs(title="", x="index", y="anomary")
+p <- p + geom_line() + labs(title="", x="index", y="anomaly")
 plot(p)
 ggsave("./img/knn.png", p)

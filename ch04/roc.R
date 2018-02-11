@@ -6,9 +6,9 @@ frame_files <- lapply(sys.frames(), function(x) x$ofile)
 frame_files <- Filter(Negate(is.null), frame_files)
 setwd(dirname(frame_files[[length(frame_files)]]))
 
-d <- read.csv("data/score.csv", header=T)
+d <- read.csv("data/score.csv", header = T)
 head(d)
-# name score anomary
+# name score anomaly
 # 1   x1  0.19   FALSE
 # 2   x2  0.86    TRUE
 # 3   x3  0.17   FALSE
@@ -18,12 +18,13 @@ head(d)
 
 p <- ggplot(d,
       aes(
-        x=name,
-        y=score,
-        fill=anomary,
+        x = name,
+        y = score,
+        fill = anomaly,
       )
     )
-p <- p + geom_bar(stat = "identity") + labs(title="", x="index", y="anomary score")
+p <- p + geom_bar(stat = "identity") +
+    labs(title = "", x = "index", y = "anomaly score")
 plot(p)
 ggsave("./img/score.png", p)
 
@@ -33,32 +34,33 @@ p <- ggplot(sorted,
       aes(
         x=c(1:nrow(sorted)),
         y=score,
-        fill=anomary,
+        fill=anomaly,
       )
     )
-p <- p + geom_bar(stat = "identity") + labs(title="sorted", x="", y="score")
+p <- p + geom_bar(stat = "identity") +
+    labs(title = "sorted", x = "", y = "score")
 plot(p)
 ggsave("./img/sorted-score.png", p)
 
 # ROC
-anomary <- d$anomary
-anomary_sorted <- sorted$anomary
+anomaly <- d$anomaly
+anomaly_sorted <- sorted$anomaly
 
-n_total <- length(anomary)
-n_anom <- sum(anomary)
+n_total <- length(anomaly)
+n_anom <- sum(anomaly)
 n_norm <- n_total - n_anom
 
 coverage <- rep(0, n_total)
 detection <- rep(1, n_total)
 
 for(i in c(1:n_total)) {
-  n_detecedAnom <- sum(anomary_sorted[1:i])
-  n_detecedNorm <- (n_total-i) - sum (anomary_sorted[-(1:i)])
+  n_detecedAnom <- sum(anomaly_sorted[1:i])
+  n_detecedNorm <- (n_total-i) - sum (anomaly_sorted[-(1:i)])
   coverage[i] <- n_detecedAnom / n_anom
   detection[i] <- n_detecedNorm / n_norm
 }
 
-roc <- data.frame(x=detection, y=coverage)
+roc <- data.frame(x = detection, y = coverage)
 
 p <- ggplot(roc,
       aes(
@@ -66,6 +68,8 @@ p <- ggplot(roc,
         y=y
       )
     )
-p <- p + geom_point() + geom_line() + labs(title="ROC", x="誤報率", y="異常網羅率")
+p <- p + geom_point() +
+    geom_line() +
+    labs(title = "ROC", x = "誤報率", y = "異常網羅率")
 plot(p)
 ggsave("./img/ROC.png", p)

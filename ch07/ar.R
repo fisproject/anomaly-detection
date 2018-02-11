@@ -33,21 +33,24 @@ N <- length(xi) - r
 X <- t(embed(xi-xmean, r))[,1:N] # slide window
 ypred <- t(X) %*% alpha + xmean # prediction
 y <- xi[(1+r):length(xi)]
-anomary <- (y - as.numeric(ypred))^2 / sig2
+anomaly <- (y - as.numeric(ypred))^2 / sig2
 
 d <- melt(
-      data.frame(x=c(1:length(anomary)), anomary=anomary, temp_fahrenheit=nottem[1:length(anomary)]),
-      measure=c("anomary", "temp_fahrenheit")
+      data.frame(x = c(1:length(anomaly)),
+                 anomaly = anomaly,
+                 temp_fahrenheit = nottem[1:length(anomaly)]),
+      measure = c("anomaly", "temp_fahrenheit")
     )
 
 p <- ggplot(d,
       aes(
-        x=x,
-        y=value,
-        group=variable,
-        colour=variable
+        x = x,
+        y = value,
+        group = variable,
+        colour = variable
       )
     )
-p <- p + geom_line() + labs(title="nottem", x="time index", y="")
+p <- p + geom_line() +
+    labs(title = "nottem", x = "time index", y = "")
 plot(p)
 ggsave("./img/ar-nottem.png", p)
